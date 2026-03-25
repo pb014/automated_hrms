@@ -112,4 +112,39 @@ class Attendance(Base):
  
     employee    = relationship("Employee")
 
+
 #Module-4
+class ReviewCycle(Base):
+    __tablename__ = "review_cycles"
+ 
+    id          = Column(Integer, primary_key=True, index=True)
+    period_name = Column(String)                          
+    start_date  = Column(Date)
+    end_date    = Column(Date)
+    created_at  = Column(DateTime, default=func.now())
+ 
+    reviews     = relationship("EmployeeReview", back_populates="cycle")
+
+ 
+class EmployeeReview(Base):
+    __tablename__ = "employee_reviews"
+ 
+    id                  = Column(Integer, primary_key=True, index=True)
+    cycle_id            = Column(Integer, ForeignKey("review_cycles.id"), nullable=False)
+    employee_id         = Column(Integer, ForeignKey("employees.id"), nullable=False)
+ 
+    # For employee
+    self_achievements   = Column(Text, nullable=True)
+    self_challenges     = Column(Text, nullable=True)
+    self_goals          = Column(Text, nullable=True)
+ 
+    # For manager
+    manager_ratings     = Column(JSON, nullable=True)     
+    manager_comments    = Column(Text, nullable=True)
+ 
+    ai_summary          = Column(Text, nullable=True)     
+    ai_flags            = Column(Text, nullable=True)     
+    ai_development_actions = Column(JSON, nullable=True)  
+ 
+    cycle               = relationship("ReviewCycle", back_populates="reviews")
+    employee            = relationship("Employee")
