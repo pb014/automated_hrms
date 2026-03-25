@@ -1,0 +1,38 @@
+from sqlalchemy import(
+    Column, Integer, String,Text, Float, Boolean, Date, DateTime, ForeignKey, JSON, column
+)
+
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+from database import Base
+
+class Employee(Base):
+    __tablename__ = 'employees'
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    designation = Column(String)
+    department = Column(String)
+    joining_date = Column(Date)
+    manager_id    = Column(Integer, ForeignKey("employees.id"), nullable=True)  
+    contact_email = Column(String)
+    contact_phone = Column(String)
+    skills        = Column(String)                        
+    bio           = Column(Text)                         
+    is_active     = Column(Boolean, default=True)
+    created_at    = Column(DateTime, default=func.now())
+
+    documents = relationship("Document", back_populates="employee")
+    manager = relationship("Employee", remote_side=[id], backref="reports")
+
+class Document(Base):
+    __tablename__ = "documents"
+ 
+    id            = Column(Integer, primary_key=True, index=True)
+    employee_id   = Column(Integer, ForeignKey("employees.id"), nullable=False)
+    filename      = Column(String)                        
+    file_path     = Column(String)                        
+    doc_type      = Column(String)                        
+    uploaded_at   = Column(DateTime, default=func.now())
+ 
+    employee      = relationship("Employee", back_populates="documents")
