@@ -71,4 +71,45 @@ class Candidate(Base):
  
     job                  = relationship("JobPosting", back_populates="candidates")
 
+
 #Module-3
+class LeaveRequest(Base):
+    __tablename__ = "leave_requests"
+ 
+    id              = Column(Integer, primary_key=True, index=True)
+    employee_id     = Column(Integer, ForeignKey("employees.id"), nullable=False)
+    leave_type      = Column(String)                      
+    start_date      = Column(Date, nullable=False)
+    end_date        = Column(Date, nullable=False)
+    reason          = Column(Text)
+    status          = Column(String, default="pending")   
+    manager_comment = Column(Text, nullable=True)
+    ai_flag         = Column(Text, nullable=True)         
+    created_at      = Column(DateTime, default=func.now())
+ 
+    employee        = relationship("Employee")
+ 
+ 
+class LeaveBalance(Base):
+    __tablename__ = "leave_balances"
+ 
+    id          = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("employees.id"), nullable=False)
+    leave_type  = Column(String)                          
+    total       = Column(Integer, default=0)              
+    used        = Column(Integer, default=0)              
+ 
+    employee    = relationship("Employee")
+ 
+ 
+class Attendance(Base):
+    __tablename__ = "attendance"
+ 
+    id          = Column(Integer, primary_key=True, index=True)
+    employee_id = Column(Integer, ForeignKey("employees.id"), nullable=False)
+    date        = Column(Date, nullable=False)
+    status      = Column(String)                          
+ 
+    employee    = relationship("Employee")
+
+#Module-4
