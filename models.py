@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
 
+#Module - 1
 class Employee(Base):
     __tablename__ = 'employees'
 
@@ -36,3 +37,38 @@ class Document(Base):
     uploaded_at   = Column(DateTime, default=func.now())
  
     employee      = relationship("Employee", back_populates="documents")
+
+
+#Module-2
+class JobPosting(Base):
+    __tablename__ = "job_postings"
+ 
+    id              = Column(Integer, primary_key=True, index=True)
+    role            = Column(String, nullable=False)      
+    description     = Column(Text)                        
+    required_skills = Column(String)                      
+    experience_level= Column(String)                      
+    status          = Column(String, default="open")      
+    created_at      = Column(DateTime, default=func.now())
+ 
+    candidates      = relationship("Candidate", back_populates="job")
+
+class Candidate(Base):
+    __tablename__ = "candidates"
+ 
+    id                   = Column(Integer, primary_key=True, index=True)
+    job_id               = Column(Integer, ForeignKey("job_postings.id"), nullable=False)
+    name                 = Column(String, nullable=False)
+    email                = Column(String)
+    resume_path          = Column(String)                 
+    stage                = Column(String, default="Applied")     # Applied → Screening → Interview → Offer → HiredRejected
+    match_score          = Column(Float, nullable=True)   
+    match_reasoning      = Column(Text, nullable=True)    
+    strengths            = Column(JSON, nullable=True)    
+    gaps                 = Column(JSON, nullable=True)    
+    interview_questions  = Column(JSON, nullable=True)    
+    applied_at           = Column(DateTime, default=func.now())
+ 
+    job                  = relationship("JobPosting", back_populates="candidates")
+
+#Module-3
