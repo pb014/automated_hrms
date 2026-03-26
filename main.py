@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import true
 from database import engine
 import models
+import os
 
 models.Base.metadata.create_all(bind = engine)
 
@@ -20,15 +22,29 @@ app.add_middleware(
     allow_headers =["*"],
 )
 
-from routers.employees import router as employees_router
+os.makedirs("uploads", exist_ok=True)
+os.makedirs("uploads/resumes", exist_ok=True)
+os.makedirs("uploads/documents", exist_ok=True)
+os.makedirs("uploads/policies", exist_ok=True)
 
-app.include_router(employees_router)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
+from routers import employees
+app.include_router(employees.router, prefix="/api/employees", tags=["Employees"])
 
 @app.get("/")
 def root():
     return {
-        "message": "HRMS API is running",
-        "docs": "Visit /docs to explore all endpoints"
+        "message": "AI-Powered HRMS API is running!",
+        "docs": "Visit /docs for interactive API documentation",
+        "modules": [
+            "Employee Records",
+            "Recruitment & ATS",
+            "Leave & Attendance",
+            "Performance Reviews",
+            "Onboarding Assistant",
+            "HR Analytics"
+        ]
     }
 
 @app.get("/health")
