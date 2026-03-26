@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
 from sqlalchemy.orm import Session
-from sqlalchemy import or_
+from sqlalchemy import func, or_
 from typing import List, Optional
-from datetime import datetime, timezone
 import csv
 import io
 from fastapi.responses import StreamingResponse
@@ -139,11 +138,11 @@ def check_duplicates(db: Session = Depends(get_db)):
 
     for emp in employees:
         missing = []
-        if not emp.contact:
+        if emp.contact is None:
             missing.append("contact")
-        if not emp.manager_id:
+        if emp.manager_id is None:
             missing.append("manager")
-        if not emp.bio:
+        if emp.bio is None:
             missing.append("bio (not AI-generated yet)")
         
         if missing:
@@ -189,19 +188,73 @@ def update_employee(
 
 @router.delete("/{employee_id}")
 def deactivate_employee(employee_id: int, db: Session = Depends(get_db)):
-    """
-    DEACTIVATE (not delete) an employee.
     
-    The PDF says "deactivate" — we never truly delete employee records.
-    In real HR systems, you keep the data for legal/audit reasons.
-    We just set is_active = False.
-    """
     employee = db.query(Employee).filter(Employee.id == employee_id).first()
     if not employee:
         raise HTTPException(status_code=404, detail="Employee not found")
     
     employee.is_active = False
-    employee.termination_date = datetime.now(timezone.utc).date()
+    employee.termination_date = func.now().date()
     db.commit()
     
     return {"message": f"Employee {employee.name} deactivated successfully"}
+
+#Document upload endpoints
+@router.post("/{employee_id}/documents", response_model=DocumentResponse)
+async def upload_document(
+    employee_id: int,
+    doc_type: str = Query(..., description="Type: offer_letter, id_proof, etc."),
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db)
+):
+
+    employee = db.query(Employee).filter(Employee.id == employee_id).first()
+    if not employee:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    
+    file_path = f"uploads/documents/{employee_id}_{file.filename}"
+    with open(file_path, "wb") as f:
+        content = await file.read()
+        f.write(content)
+    
+    doc = Document(
+        employee_id=employee_id,
+        filename=file.filename,
+        file_path=file_path,
+        doc_type=doc_type
+    )
+    db.add(doc)
+    db.commit()
+    db.refresh(doc)
+    
+    return doc
+
+
+@router.get("/{employee_id}/documents", response_model=List[DocumentResponse])
+def get_employee_documents(employee_id: int, db: Session = Depends(get_db)):
+    return db.query(Document).filter(Document.employee_id == employee_id).all()
+
+
+@router.post("/{employee_id}/generate-bio")
+def generate_bio(employee_id: int, db: Session = Depends(get_db)):
+
+    employee = db.query(Employee).filter(Employee.id == employee_id).first()
+    if not employee:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    
+    from services.gemini_service import generate_employee_bio
+    
+    bio = generate_employee_bio(
+        name=str(employee.name),
+        designation=str(employee.designation),
+        department=str(employee.department),
+        joining_date=str(employee.joining_date),
+        contact=str(employee.contact)
+    )
+    
+
+    employee.bio = bio
+    db.commit()
+    db.refresh(employee)
+    
+    return {"bio": bio, "employee_id": employee_id}

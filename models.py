@@ -1,6 +1,6 @@
 from annotated_types import T
 from sqlalchemy import(
-    Column, Integer, String,Text, Float, Boolean, Date, DateTime, ForeignKey, JSON, column, null
+    Column, Integer, String,Text, Float, Boolean, Date, DateTime, ForeignKey, JSON, column, null, true
 )
 
 from sqlalchemy.orm import relationship
@@ -12,17 +12,17 @@ class Employee(Base):
     __tablename__ = 'employees'
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    designation = Column(String)
-    department = Column(String)
-    joining_date = Column(Date)
+    name = Column(String(100), nullable=False)
+    email = Column(String(100), unique=True, nullable=False)
+    designation = Column(String(100), nullable=False)
+    department = Column(String(100), nullable=False)
+    joining_date = Column(Date, nullable=False)
     manager_id    = Column(Integer, ForeignKey("employees.id"), nullable=True)  
-    contact_email = Column(String)
-    contact_phone = Column(String)
-    skills        = Column(String)                        
+    
+    contact = Column(String(20))                     
     bio           = Column(Text, nullable=True)                         
     is_active     = Column(Boolean, default=True)
-    termination_date = Column(DateTime, nullable=True)
+    termination_date = Column(Date, nullable=True)
     created_at    = Column(DateTime, default=func.now())
 
     documents = relationship("Document", back_populates="employee")
