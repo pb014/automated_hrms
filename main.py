@@ -1,3 +1,10 @@
+from models import (
+    Employee, Document,
+    JobPosting, Candidate,
+    LeaveRequest, LeaveBalance, Attendance,
+    ReviewCycle, EmployeeReview,
+    OnboardingChecklist, ChecklistProgress, PolicyDocument, ChatLog
+)
 from routers import employees, leave, recruitment, performance, onboarding
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,6 +15,7 @@ import models
 import os
 
 models.Base.metadata.create_all(bind=engine)
+
 
 app = FastAPI(
     title="AI-Powered HRMS",
