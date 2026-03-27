@@ -1,5 +1,4 @@
-from routers import recruitment
-from routers import employees
+from routers import employees, leave, recruitment
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -32,10 +31,15 @@ os.makedirs("uploads/policies", exist_ok=True)
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 app.include_router(
-    employees.router, prefix="/api/employees", tags=["Employees"])
+    employees.router, prefix="/api/employees", tags=["Employees"]
+)
 
 app.include_router(
     recruitment.router, prefix="/api/recruitment", tags=["Recruitment"]
+)
+
+app.include_router(
+    leave.router, prefix="/api/leave", tags=["Leave & Attendance"]
 )
 
 
