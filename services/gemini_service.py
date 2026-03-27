@@ -193,3 +193,75 @@ def generate_review_summary(
             "flags": [],
             "development_actions": []
         }
+
+
+# Onboarding Chatbot
+def answer_policy_question(question: str, context_chunks: list) -> dict:
+    context = "\n\n".join(
+        context_chunks) if context_chunks else "No policy documents uploaded yet."
+
+    prompt = f"""You are a helpful onboarding assistant for new employees. 
+                Answer the following question using ONLY the information provided in the context below.
+                
+                CONTEXT (from company policy documents):
+                {context}
+                
+                QUESTION: {question}
+                
+                RULES:
+                1. ONLY use information from the CONTEXT above to answer
+                2. If the answer is NOT found in the context, respond with exactly:
+                "I don't have information about that in our policy documents. Please contact HR at hr@company.com for assistance."
+                3. Be friendly, concise, and helpful
+                4. If partially relevant info exists, share what you can and direct them to HR for the rest
+                
+                Your answer:"""
+
+    try:
+        response = client.models.generate_content(
+            model=MODEL_NAME,
+            contents=prompt,
+            config={
+                "response_mime_type": "application/json"
+            }
+        )
+        answer = response.text.strip()
+
+        # Check if the bot couldn't answer
+        could_answer = "please contact hr" not in answer.lower(
+        ) and "don't have information" not in answer.lower()
+
+        return {
+            "answer": answer,
+            "could_answer": could_answer
+        }
+    except Exception as e:
+        return {
+            "answer": f"Sorry, I encountered an error. Please contact HR at hr@company.com. Error: {str(e)}",
+            "could_answer": False
+        }
+
+# HR Analytics Summary
+
+
+def generate_hr_summary(analytics_data: dict) -> str:
+    prompt = f"""You are a senior HR advisor preparing a monthly HR summary report.
+    CURRENT HR DATA:
+    {json.dumps(analytics_data, indent=2)}
+    
+    Write a professional monthly HR summary covering:
+    1. KEY HIGHLIGHTS: What's going well (headcount growth, filled positions, etc.)
+    2. RISKS: Any concerning trends (high attrition, leave utilisation issues, etc.)
+    3. RECOMMENDED ACTIONS: 2-3 specific things HR should do this month
+    
+    Keep the summary concise (3-4 paragraphs), professional, and actionable.
+    Use actual numbers from the data provided."""
+
+    try:
+        response = client.models.generate_content(
+            model=MODEL_NAME,
+            contents=prompt
+        )
+        return response.text.strip()
+    except Exception as e:
+        return f"Summary generation failed: {str(e)}"

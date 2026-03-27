@@ -1,4 +1,4 @@
-from routers import employees, leave, recruitment
+from routers import employees, leave, performance, recruitment
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -17,7 +17,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -40,6 +40,10 @@ app.include_router(
 
 app.include_router(
     leave.router, prefix="/api/leave", tags=["Leave & Attendance"]
+)
+
+app.include_router(
+    performance.router, prefix="/api/performance", tags=["Performance"]
 )
 
 
