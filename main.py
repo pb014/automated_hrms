@@ -1,4 +1,4 @@
-from routers import employees, leave, performance, recruitment
+from routers import employees, leave, recruitment, performance, onboarding
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -44,6 +44,10 @@ app.include_router(
 
 app.include_router(
     performance.router, prefix="/api/performance", tags=["Performance"]
+)
+
+app.include_router(
+    onboarding.router, prefix="/api/onboarding", tags=["Onboarding"]
 )
 
 
