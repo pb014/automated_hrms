@@ -17,7 +17,7 @@ const navItems = [
   { to: "/onboarding", icon: HiOutlineAcademicCap, label: "Onboarding" },
 ];
 
-function Layout() {
+export const Layout = () => {
   return (
     <div className='flex h-screen bg-gray-50'>
       {/* Sidebar */}
@@ -59,13 +59,10 @@ function Layout() {
           </h2>
         </header>
 
-        {/* Page content — Outlet renders the matched child route */}
         <main className='flex-1 overflow-y-auto p-6'>
           <Outlet />
         </main>
       </div>
     </div>
   );
-}
-
-export default Layout;
+};

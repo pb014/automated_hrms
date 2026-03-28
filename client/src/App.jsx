@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Layout from "./components/Layout";
-import Dashboard from "./pages/Dashboard";
-import Employees from "./pages/Employees";
-import Recruitment from "./pages/Recruitment";
-import Leave from "./pages/Leave";
-import Performance from "./pages/Performance";
-import Onboarding from "./pages/Onboarding";
+import { Layout } from "./components/Layout";
+import { Dashboard } from "./pages/Dashboard";
+import { Employees } from "./pages/Employees";
+import { Recruitment } from "./pages/Recruitment";
+import { Leave } from "./pages/Leave";
+import { Performance } from "./pages/Performance";
+import { Onboarding } from "./pages/Onboarding";
 
-export const App = () => {
+const App = () => {
   return (
     <Router>
       <Routes>
@@ -23,3 +23,5 @@ export const App = () => {
     </Router>
   );
 };
+
+export default App;
