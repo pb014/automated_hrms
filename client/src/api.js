@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = axios.create({ baseURL: "http://localhost:8000/api" });
+const API = axios.create({ baseURL: import.meta.env.BASE_URL });
 
 //Module-1
 export const getEmployees = (params) => API.get("/employees", { params });
