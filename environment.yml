@@ -1,0 +1,16 @@
+name: hrms
+channels:
+  - conda-forge
+dependencies:
+  - aiofiles
+  - faiss
+  - fastapi
+  - google-genai
+  - pydantic
+  - pypdf
+  - python=3.13
+  - python-dotenv
+  - python-multipart
+  - sentence-transformers
+  - sqlalchemy
+  - uvicorn
