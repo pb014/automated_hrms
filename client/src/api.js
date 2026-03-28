@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = axios.create({ baseURL: import.meta.env.BASE_URL });
+const API = axios.create({ baseURL: import.meta.env.VITE_API_URL });
 
 //Module-1
 export const getEmployees = (params) => API.get("/employees", { params });

@@ -91,7 +91,6 @@ class JobPostingResponse(BaseModel):
 
 
 class CandidateCreate(BaseModel):
-    job_id: int
     name: str
     email: Optional[str] = None
 

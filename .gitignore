@@ -171,3 +171,11 @@ pnpm-debug.log*
 # Caches
 .eslintcache
 .vite/
+
+# Uploads (user data, not code)
+server/uploads/resumes/*
+server/uploads/documents/*
+server/uploads/policies/*
+!server/uploads/resumes/.gitkeep
+!server/uploads/documents/.gitkeep
+!server/uploads/policies/.gitkeep
