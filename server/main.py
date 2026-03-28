@@ -5,7 +5,7 @@ from models import (
     ReviewCycle, EmployeeReview,
     OnboardingChecklist, ChecklistProgress, PolicyDocument, ChatLog
 )
-from routers import employees, leave, recruitment, performance, onboarding
+from routers import employees, leave, recruitment, performance, onboarding, analytics
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -56,6 +56,10 @@ app.include_router(
 
 app.include_router(
     onboarding.router, prefix="/api/onboarding", tags=["Onboarding"]
+)
+
+app.include_router(
+    analytics.router, prefix="/api/analytics", tags=["Analytics"]
 )
 
 
