@@ -6,7 +6,7 @@ A full-stack HRMS where AI is woven into core HR workflows — from recruitment 
 
 - **Backend:** FastAPI, SQLAlchemy, SQLite, Pydantic
 - **Frontend:** React (Vite), TailwindCSS v4, Axios, React Router
-- **AI/LLM:** Google Gemini API (gemini-2.0-flash)
+- **AI/LLM:** Google Gemini API (gemini-3.0-flash-preview, can change this according to limits)
 - **RAG:** sentence-transformers (all-MiniLM-L6-v2) + FAISS for document-grounded chatbot
 
 ## Features
