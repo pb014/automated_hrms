@@ -127,7 +127,7 @@ def ai_monthly_summary(db: Session = Depends(get_db)):
         "filled_positions": filled_jobs,
         "pending_leave_requests": pending_leaves,
         "headcount_by_department": {dept: count for dept, count in dept_counts},
-        "report_date": datetime.now(datetime.UTC).strftime("%B %Y")
+        "report_date": datetime.utcnow().strftime("%B %Y")
     }
 
     from services.gemini_service import generate_hr_summary

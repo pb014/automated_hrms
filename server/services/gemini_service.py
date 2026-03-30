@@ -215,7 +215,9 @@ def answer_policy_question(question: str, context_chunks: list) -> dict:
                 3. Be friendly, concise, and helpful
                 4. If partially relevant info exists, share what you can and direct them to HR for the rest
                 
-                Your answer:"""
+                Respond in plain conversational sentences, NOT in JSON or any structured format. Write as if you're a friendly colleague explaining the answer verbally.
+
+                Your answer: """
 
     try:
         response = client.models.generate_content(
